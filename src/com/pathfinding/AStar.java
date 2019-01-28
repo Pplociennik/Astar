@@ -236,10 +236,10 @@ public class AStar {
             result ="S";
 
         if (cell.parent.j > cell.j)
-            result ="D";
+            result ="A";
 
         if (cell.parent.j < cell.j)
-            result ="A";
+            result ="D";
 
 
         return result;
