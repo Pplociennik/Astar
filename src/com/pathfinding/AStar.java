@@ -1,9 +1,13 @@
 package com.pathfinding;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class AStar {
+
+    public String result = "default";
 
     // costs for diagonal and vertical / horizontal moves
     public static final int DIAGONAL_COST = 14;
@@ -105,15 +109,15 @@ public class AStar {
                 t = grid[current.i - 1][current.j];
                 updateCostIfNeeded(current, t, current.finalCost + V_H_COST);
 
-                if (current.j - 1 >= 0) {
-                    t = grid[current.i - 1][current.j - 1];
-                    updateCostIfNeeded(current, t, current.finalCost + DIAGONAL_COST);
-                }
-
-                if (current.j + 1 < grid[0].length) {
-                    t = grid[current.i - 1][current.j + 1];
-                    updateCostIfNeeded(current, t, current.finalCost + DIAGONAL_COST);
-                }
+//                if (current.j - 1 >= 0) {
+//                    t = grid[current.i - 1][current.j - 1];
+//                    updateCostIfNeeded(current, t, current.finalCost + DIAGONAL_COST);
+//                }
+//
+//                if (current.j + 1 < grid[0].length) {
+//                    t = grid[current.i - 1][current.j + 1];
+//                    updateCostIfNeeded(current, t, current.finalCost + DIAGONAL_COST);
+//                }
             }
 
             if (current.j - 1 >= 0) {
@@ -131,15 +135,15 @@ public class AStar {
                 updateCostIfNeeded(current, t, current.finalCost + V_H_COST);
 
 
-            if (current.j - 1 >= 0) {
-                t = grid[current.i + 1][current.j - 1];
-                updateCostIfNeeded(current, t, current.finalCost + DIAGONAL_COST);
-            }
-
-            if (current.j + 1 < grid[0].length) {
-                t = grid[current.i + 1][current.j + 1];
-                updateCostIfNeeded(current, t, current.finalCost + DIAGONAL_COST);
-            }
+//            if (current.j - 1 >= 0) {
+//                t = grid[current.i + 1][current.j - 1];
+//                updateCostIfNeeded(current, t, current.finalCost + DIAGONAL_COST);
+//            }
+//
+//            if (current.j + 1 < grid[0].length) {
+//                t = grid[current.i + 1][current.j + 1];
+//                updateCostIfNeeded(current, t, current.finalCost + DIAGONAL_COST);
+//            }
             }
         }
     }
@@ -194,6 +198,10 @@ public class AStar {
                 current = current.parent;
             }
 
+
+
+
+
             System.out.println("\n");
 
             for (int i = 0; i < grid.length; i++) {
@@ -214,21 +222,71 @@ public class AStar {
             System.out.println("No possible path");
     }
 
-    public static void main(String[] args) {
-        AStar aStar = new AStar(5, 5, 0, 0, 3, 2,
+    public String chooseDirection(Cell cell) {
+
+        String result = "default";
+
+        if (cell.parent == null)
+            result = "";
+
+        if (cell.parent.i > cell.i)
+            result ="W";
+
+        if (cell.parent.i < cell.i)
+            result ="S";
+
+        if (cell.parent.j > cell.j)
+            result ="D";
+
+        if (cell.parent.j < cell.j)
+            result ="A";
+
+
+        return result;
+    }
+
+    public void displayDirectionSolution() {
+
+        String lettersChain = "";
+        List<String> chainElements = new ArrayList<>();
+
+
+        if (closedCells[endI][endJ]) {
+            Cell current = grid[endI][endJ];
+
+            while (current.parent != null) {
+                chainElements.add(chooseDirection(current));
+                current = current.parent;
+            }
+
+            for (int i = chainElements.size() - 1; i >= 0; i--) {
+                lettersChain = lettersChain + chainElements.get(i);
+            }
+
+            this.result = lettersChain;
+        }
+    }
+
+    public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
+        AStar aStar = new AStar(14, 14, Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]),
                 new int[][] {
                         {0,4}, {2,2}, {3,1}, {3,3}, {2,1}, {2,3}
                 });
 
-        aStar.display();
+//        aStar.display();
         aStar.process(); // Apply A* algorithm
-        aStar.displayScores(); // Display Scores on grid
-        aStar.displaySolution(); // Display Solution Path
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        aStar.displayScores(); // Display Scores on grid
+//        aStar.displaySolution(); // Display Solution Path
+        aStar.displayDirectionSolution();
+//        try {
+//            System.in.read();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        PrintWriter printWriter = new PrintWriter("howToGo.txt", "UTF-8");
+        printWriter.println(aStar.result);
+        printWriter.close();
     }
 
 }
