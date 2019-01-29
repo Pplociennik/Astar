@@ -280,7 +280,7 @@ public class AStar {
 //        aStar.display();
         aStar.process(); // Apply A* algorithm
 //        aStar.displayScores(); // Display Scores on grid
-//        aStar.displaySolution(); // Display Solution Path
+        aStar.displaySolution(); // Display Solution Path
         aStar.displayDirectionSolution();
 //        try {
 //            System.in.read();
